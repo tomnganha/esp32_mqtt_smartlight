@@ -108,14 +108,29 @@
 // //   Serial.println(payload);
 // // }
 #include <Arduino.h>
+#include<WiFi.h>
+#include<MQTTClient.h>
+#include<ezButton.h>
 #include "config.h"
 #include "wifi_handler.h"
 #include "mqtt_handler.h"
+#include "light_handler.h"
 
 WiFiClient network;
 MQTTClient mqtt = MQTTClient(256);
 unsigned long lastPublishTime = 0;
-
+const int NUM_LIGHTs=5;
+//bool lightStates[NUM_LIGHTs]={false,false,false,false,false};
+String lightStates[NUM_LIGHTs]={"off","off","off","off","off"};
+//ezButton buttons[NUM_LIGHTs];
+// // Tạo mảng quản lý nút nhấn và khởi tạo ngay
+ezButton buttons[NUM_LIGHTs] = {
+  ezButton(BUTTON_PINS[0]),
+  ezButton(BUTTON_PINS[1]),
+  ezButton(BUTTON_PINS[2]),
+  ezButton(BUTTON_PINS[3]),
+  ezButton(BUTTON_PINS[4])
+};
 void setup() {
   Serial.begin(9600);
 
@@ -124,13 +139,14 @@ void setup() {
 
   connectToWiFi();
   connectToMQTT();
+  setUpLightsAndButton();
 }
 
 void loop() {
   mqtt.loop();
-
-  if (millis() - lastPublishTime > PUBLISH_INTERVAL) {
-    sendToMQTT();
-    lastPublishTime = millis();
-  }
+  handleButtonPress();
+  // if (millis() - lastPublishTime > PUBLISH_INTERVAL) {
+  //   sendToMQTT();
+  //   lastPublishTime = millis();
+  // }
 }

@@ -13,9 +13,13 @@ const char MQTT_USERNAME[] = "";                        // CHANGE IT IF REQUIRED
 const char MQTT_PASSWORD[] = "";                        // CHANGE IT IF REQUIRED, empty if not required
 
 // MQTT Topics
-const char PUBLISH_TOPIC[] = "thai-esp32-001/loopback";    // CHANGE IT AS YOU DESIRE
-const char SUBSCRIBE_TOPIC[] = "thai-esp32-001/loopback";  // CHANGE IT AS YOU DESIRE
+const char PUBLISH_TOPIC[] = "pbl3-esp32-001/lights/status";    // CHANGE IT AS YOU DESIRE
+const char SUBSCRIBE_TOPIC[] = "pbl3-esp32-001/lights/control";  // CHANGE IT AS YOU DESIRE
 
 const int PUBLISH_INTERVAL = 5000;  // 5 seconds
+
+//hardware configuration
+const int BUTTON_PINS[] = {15, 16, 4, 18, 19}; // GPIO cho 5 nút nhấn
+const int LIGHT_PINS[] = {17,22,23,25,26};         // GPIO cho 5 bóng đèn
 
 #endif
