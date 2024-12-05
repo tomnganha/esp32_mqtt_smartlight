@@ -3,9 +3,10 @@
 
 #include <MQTTClient.h>
 #include <ArduinoJson.h>
+#include<WiFiClientSecure.h>
 #include "config.h"
 
-extern WiFiClient network;
+extern WiFiClientSecure network;
 extern MQTTClient mqtt;
 extern unsigned long lastPublishTime;
 extern const int NUM_LIGHTs;
@@ -36,7 +37,8 @@ void sendToMQTT()
   for (int i = 0; i < NUM_LIGHTs; i++)
   {
     // status[String("light") + i] = lightStates[i];
-    status[String("light") + i] = lightStates[i];
+    
+    status[String("light") + (i+1)] = lightStates[i];
   }
   char payload[256];
   serializeJson(status, payload);
@@ -52,10 +54,26 @@ void messageHandler(String &topic, String &payload)
   {
     JsonDocument controlMessage;
     deserializeJson(controlMessage, payload);
+    Serial.println(payload);
+Serial.print("receive data");
+  if(controlMessage["status"].is<const char *>()){
+    if(controlMessage["status"].as<String>()=="on"){
+      for (int i = 0; i < NUM_LIGHTs; i++){
+         lightStates[i]="on";
+         digitalWrite(LIGHT_PINS[i], HIGH);
+      }
+    }else if(controlMessage["status"].as<String>()=="off"){
+      for (int i = 0; i < NUM_LIGHTs; i++){
+         lightStates[i]="off";
+         digitalWrite(LIGHT_PINS[i], LOW);
+      }
+    }
+  }
+  
 
     for (int i = 0; i < NUM_LIGHTs; i++)
     {
-      String lightKey = String("light") + i;
+      String lightKey = String("light") + (i+1);
       // if (controlMessage[lightKey].is<bool>()) {
       //   lightStates[i] = controlMessage[lightKey];
       //   digitalWrite(LIGHT_PINS[i], lightStates[i] ? HIGH : LOW);
