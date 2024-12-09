@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 #include<WiFiClientSecure.h>
 #include "config.h"
+// #include "light_handler.h"
 
 extern WiFiClientSecure network;
 extern MQTTClient mqtt;
@@ -60,14 +61,45 @@ Serial.print("receive data");
     if(controlMessage["status"].as<String>()=="on"){
       for (int i = 0; i < NUM_LIGHTs; i++){
          lightStates[i]="on";
-         digitalWrite(LIGHT_PINS[i], HIGH);
+        //  digitalWrite(LIGHT_PINS[i], HIGH);
+        if(powerSavingMode==false){
+                ledcWrite(i,255);
+            }else if(powerSavingMode==true){
+                ledcWrite(i,brightness_normal);
+            }
       }
     }else if(controlMessage["status"].as<String>()=="off"){
       for (int i = 0; i < NUM_LIGHTs; i++){
          lightStates[i]="off";
-         digitalWrite(LIGHT_PINS[i], LOW);
+         ledcWrite(i,0);
       }
     }
+  }
+  if(controlMessage["powerSavingMode"].is<const char *>()){
+    if(controlMessage["powerSavingMode"].as<String>()=="on"){
+      // for (int i = 0; i < NUM_LIGHTs; i++){
+      //    lightStates[i]="on";
+      //    digitalWrite(LIGHT_PINS[i], HIGH);
+      powerSavingMode=true;
+      resetLight();
+      // }
+    }else if(controlMessage["powerSavingMode"].as<String>()=="off"){
+      // for (int i = 0; i < NUM_LIGHTs; i++){
+      //    lightStates[i]="off";
+      //    digitalWrite(LIGHT_PINS[i], LOW);
+      // }
+      powerSavingMode=false;
+      resetLight();
+    }
+    Serial.println(powerSavingMode);
+  }
+   if(controlMessage["brightness_normal"].is<const char *>()){
+    String value=controlMessage["brightness_normal"].as<String>();
+    uint8_t tem=value.toInt();
+    if(tem>0&&tem<=255&&value==String(tem)){
+      brightness_normal=tem;
+    }
+    resetLight();
   }
   
 
@@ -84,9 +116,15 @@ Serial.print("receive data");
         ///digitalWrite(LIGHT_PINS[i], lightStates[i] == "on" ? HIGH : (lightStates[i] == "off" ? LOW : lightStates[i]));
          // Điều khiển đèn
             if (lightStates[i] == "on") {
-                digitalWrite(LIGHT_PINS[i], HIGH);
+                // digitalWrite(LIGHT_PINS[i], HIGH);
+                if(powerSavingMode==false){
+                ledcWrite(i,255);
+            }else if(powerSavingMode==true){
+                ledcWrite(i,brightness_normal);
+            }
             } else if (lightStates[i] == "off") {
-                digitalWrite(LIGHT_PINS[i], LOW);
+                // digitalWrite(LIGHT_PINS[i], LOW);
+                ledcWrite(i,0);
             } else {
                 Serial.println("Invalid light state: " + lightStates[i]);
             }

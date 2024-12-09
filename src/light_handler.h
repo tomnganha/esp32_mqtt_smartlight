@@ -4,6 +4,7 @@
 #include<Arduino.h>
 #include<ezButton.h>
 #include "config.h"
+// #include "mqtt_handler.h"
 
 extern const int NUM_LIGHTs;
 extern String lightStates[];
@@ -12,9 +13,11 @@ extern const int NUM_LIGHTs;
 
 void setUpLightsAndButton(){
     for (int i = 0; i < NUM_LIGHTs; i++) {
-    pinMode(LIGHT_PINS[i], OUTPUT);
+    //pinMode(LIGHT_PINS[i], OUTPUT);
+    ledcSetup(i, pwmFreq, pwmResolution);
+    ledcAttachPin(LIGHT_PINS[i], i);
     //lightStates[i] = false;  // Initialize lights to OFF
-    digitalWrite(LIGHT_PINS[i], LOW);
+    ledcWrite(i, 0);
     buttons[i].setDebounceTime(50);
   }
 }
@@ -23,10 +26,34 @@ void handleButtonPress(){
         buttons[i].loop();
         if(buttons[i].isPressed()){
             lightStates[i]=(lightStates[i]=="on"?"off":"on");
-            digitalWrite(LIGHT_PINS[i],lightStates[i]=="on" ? HIGH : LOW);
+           if(powerSavingMode==false){
+                ledcWrite(i,lightStates[i]=="on" ? 255 : 0);
+            }else if(powerSavingMode==true){
+                ledcWrite(i,lightStates[i]=="on" ? brightness_normal : 0);
+            }
             sendToMQTT();  // Publish updated status to MQTT
         }
     }
 }
+void resetLight(){
+   for(int i=0;i<NUM_LIGHTs;i++){
+        if(powerSavingMode==false){
+                ledcWrite(i,lightStates[i]=="on" ? 255 : 0);
+            }else if(powerSavingMode==true){
+                ledcWrite(i,lightStates[i]=="on" ? brightness_normal : 0);
+            }
+    }
+}
 
+void powerSavingModeHandler(){
+    for(int i=0;i<NUM_LIGHTs;i++){
+        if(lightStates[i]=="on"){
+        if(digitalRead(IR_SENSOR_PINS[i])==LOW){
+             ledcWrite(i, 255);
+        }else if(digitalRead(IR_SENSOR_PINS[i])==HIGH){
+            ledcWrite(i, brightness_normal);
+        }
+        }
+    }
+}
 #endif

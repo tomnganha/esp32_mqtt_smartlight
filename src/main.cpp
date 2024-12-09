@@ -4,8 +4,9 @@
 #include<ezButton.h>
 #include "config.h"
 #include "wifi_handler.h"
-#include "mqtt_handler.h"
 #include "light_handler.h"
+#include "mqtt_handler.h"
+#include "ir_sensor.h"
 #include<WiFiClientSecure.h>
 
 WiFiClientSecure network;
@@ -64,6 +65,7 @@ void setup() {
 );
 
   connectToMQTT();
+  setUpIrSensors();
   setUpLightsAndButton();
 }
 
@@ -73,6 +75,9 @@ void loop() {
   if (millis() - lastPublishTime > 10000) { // Gửi tin mỗi 5 giây
     mqtt.publish("thai12345678910/ping", "ping"); // Gửi một gói tin ping
     lastPublishTime = millis();
+  }
+  if(powerSavingMode==true){
+    powerSavingModeHandler();
   }
   handleButtonPress();
   // if (millis() - lastPublishTime > PUBLISH_INTERVAL) {

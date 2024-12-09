@@ -23,5 +23,22 @@ const int PUBLISH_INTERVAL = 5000;  // 5 seconds
 //hardware configuration
 const int BUTTON_PINS[] = {15, 16, 4, 18, 19}; // GPIO cho 5 nút nhấn
 const int LIGHT_PINS[] = {17,22,23,25,26};         // GPIO cho 5 bóng đèn
+// const int IR_SENSOR_PINS[]={5,12,13,14,27,33,32,35,34}
+const int IR_SENSOR_PINS[]={27,32,33,34,35};
 
+// Tần số PWM và độ phân giải
+const int pwmFreq = 5000; // Tần số PWM 5 kHz
+const int pwmResolution = 8; // Độ phân giải 8 bit (0-255)
+bool powerSavingMode = true; // Giá trị ban đầu là tắt chế độ tiết kiệm điện
+uint8_t brightness_normal=50;
+uint8_t brightness_max=255;
+//khi báo function
+void setUpLightsAndButton();
+void handleButtonPress();
+void resetLight();
+void sendToMQTT();
+void messageHandler(String &topic, String &payload);
+void connectToMQTT();
+void connectToWiFi();
+void powerSavingModeHandler();
 #endif
