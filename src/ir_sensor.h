@@ -10,13 +10,8 @@ extern String lightStates[];
 void setUpIrSensors(){
      for (int i = 0; i < NUM_LIGHTs; i++) {
         pinMode(IR_SENSOR_PINS[i],INPUT);
-        digitalWrite(IR_SENSOR_PINS[i],LOW);
   }
 }
-// void powerSavingModeHandler(){
-//     for(int i=0;i<NUM_LIGHTs;i++){
 
-//     }
-// }
 
 #endif

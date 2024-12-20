@@ -1,5 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
+
+//define cha LDR module
+#define LDR_MODULE 13
 //C:\Users\Dell\data
 // Wi-Fi
 const char WIFI_SSID[] = "T2";     // CHANGE TO YOUR WIFI SSID
@@ -30,6 +33,7 @@ const int IR_SENSOR_PINS[]={27,32,33,34,35};
 const int pwmFreq = 5000; // Tần số PWM 5 kHz
 const int pwmResolution = 8; // Độ phân giải 8 bit (0-255)
 bool powerSavingMode = true; // Giá trị ban đầu là tắt chế độ tiết kiệm điện
+bool autoLightMode=true;// giá trị ban đầu của chế độ bật đèn theo cảm biến ánh sáng
 uint8_t brightness_normal=50;
 uint8_t brightness_max=255;
 //khi báo function
@@ -41,4 +45,6 @@ void messageHandler(String &topic, String &payload);
 void connectToMQTT();
 void connectToWiFi();
 void powerSavingModeHandler();
+void setUpLDRModule();
+void autoLightModeHandler();
 #endif

@@ -7,6 +7,7 @@
 #include "light_handler.h"
 #include "mqtt_handler.h"
 #include "ir_sensor.h"
+#include "ldr_module.h"
 #include<WiFiClientSecure.h>
 
 WiFiClientSecure network;
@@ -66,18 +67,22 @@ void setup() {
 
   connectToMQTT();
   setUpIrSensors();
+  setUpLDRModule();
   setUpLightsAndButton();
 }
 
 void loop() {
   mqtt.loop();
   // Gửi tin nhắn định kỳ để giữ kết nối
-  if (millis() - lastPublishTime > 10000) { // Gửi tin mỗi 5 giây
+  if (millis() - lastPublishTime > 10000) { // Gửi tin mỗi 10 giây
     mqtt.publish("thai12345678910/ping", "ping"); // Gửi một gói tin ping
     lastPublishTime = millis();
   }
   if(powerSavingMode==true){
     powerSavingModeHandler();
+  }
+  if(autoLightMode==true){
+    autoLightModeHandler();
   }
   handleButtonPress();
   // if (millis() - lastPublishTime > PUBLISH_INTERVAL) {
