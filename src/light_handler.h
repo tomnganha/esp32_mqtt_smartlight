@@ -25,6 +25,7 @@ void setUpLightsAndButton()
 }
 void handleButtonPress()
 {
+    
     for (int i = 0; i < NUM_LIGHTs; i++)
     {
         buttons[i].loop();
@@ -43,6 +44,7 @@ void handleButtonPress()
             sendToMQTT(); // Publish updated status to MQTT
         }
     }
+    
 }
 //bật đèn theo trạng thái status có sẵn
 void resetLight()
@@ -80,16 +82,19 @@ void powerSavingModeHandler()
 }
 void autoLightModeHandler(){
     int ldrModuleState=digitalRead(LDR_MODULE);
-    if(ldrModuleState==HIGH){//troi toi
+    if(ldrModuleState==HIGH&&(ldrModuleState!=ldrModuleLastState)){//troi toi
         for(int i=0;i<NUM_LIGHTs;i++){
             lightStates[i]="on";
         }
         resetLight();
-    }else if(ldrModuleState==LOW){//troi sang
+        sendToMQTT(); // Publish updated status to MQTT
+    }else if(ldrModuleState==LOW&&(ldrModuleState!=ldrModuleLastState)){//troi sang
         for(int i=0;i<NUM_LIGHTs;i++){
             lightStates[i]="off";
         }
         resetLight();
+        sendToMQTT(); // Publish updated status to MQTT
     }
+    ldrModuleLastState=ldrModuleState;
 }
 #endif

@@ -23,18 +23,7 @@ extern String lightStates[];
 void sendToMQTT()
 {
   JsonDocument status;
-  // message["timestamp"] = millis();
-  // message["data"] = analogRead(0);  // Or you can read data from other sensors
-  // char messageBuffer[512];
-  // serializeJson(message, messageBuffer);
-
-  // mqtt.publish(PUBLISH_TOPIC, messageBuffer);
-
-  // Serial.println("ESP32 - sent to MQTT:");
-  // Serial.print("- topic: ");
-  // Serial.println(PUBLISH_TOPIC);
-  // Serial.print("- payload:");
-  // Serial.println(messageBuffer);
+  
   for (int i = 0; i < NUM_LIGHTs; i++)
   {
     // status[String("light") + i] = lightStates[i];
@@ -142,14 +131,10 @@ void messageHandler(String &topic, String &payload)
     for (int i = 0; i < NUM_LIGHTs; i++)
     {
       String lightKey = String("light") + (i + 1);
-      // if (controlMessage[lightKey].is<bool>()) {
-      //   lightStates[i] = controlMessage[lightKey];
-      //   digitalWrite(LIGHT_PINS[i], lightStates[i] ? HIGH : LOW);
-      // }
+      
       if (controlMessage[lightKey].is<const char *>())
       {
         lightStates[i] = controlMessage[lightKey].as<String>();
-        /// digitalWrite(LIGHT_PINS[i], lightStates[i] == "on" ? HIGH : (lightStates[i] == "off" ? LOW : lightStates[i]));
         // Điều khiển đèn
         if (lightStates[i] == "on")
         {

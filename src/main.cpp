@@ -74,7 +74,7 @@ void setup() {
 void loop() {
   mqtt.loop();
   // Gửi tin nhắn định kỳ để giữ kết nối
-  if (millis() - lastPublishTime > 10000) { // Gửi tin mỗi 10 giây
+  if (millis() - lastPublishTime > 5000) { // Gửi tin mỗi 10 giây
     mqtt.publish("thai12345678910/ping", "ping"); // Gửi một gói tin ping
     lastPublishTime = millis();
   }
