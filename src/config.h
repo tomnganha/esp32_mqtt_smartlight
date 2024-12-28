@@ -3,7 +3,8 @@
 
 //define cha LDR module
 #define LDR_MODULE 13
-//C:\Users\Dell\data
+#define ACS_MODULE 14
+ //C:\Users\Dell\data
 // Wi-Fi
 const char WIFI_SSID[] = "T2";     // CHANGE TO YOUR WIFI SSID
 const char WIFI_PASSWORD[] = "00009999";  // CHANGE TO YOUR WIFI PASSWORD
@@ -20,14 +21,17 @@ const char MQTT_PASSWORD[] = "123456";                        // CHANGE IT IF RE
 // MQTT Topics
 const char PUBLISH_TOPIC[] = "pbl3-esp32-001/lights/status";    // CHANGE IT AS YOU DESIRE
 const char SUBSCRIBE_TOPIC[] = "pbl3-esp32-001/lights/control";  // CHANGE IT AS YOU DESIRE
-
 const int PUBLISH_INTERVAL = 5000;  // 5 seconds
 
+//tinh nang giam sat dien tieu thu
+
+unsigned long previousMillis = 0;  // Thời gian trước đó (sử dụng millis)
+unsigned long interval = 60000;    // 1 phút (60,000 ms)
 //hardware configuration
-const int BUTTON_PINS[] = {15, 16, 4, 18, 19}; // GPIO cho 5 nút nhấn
-const int LIGHT_PINS[] = {17,22,23,25,26};         // GPIO cho 5 bóng đèn
+const int BUTTON_PINS[] = {19, 18, 16, 15, 4}; // GPIO cho 5 nút nhấn
+const int LIGHT_PINS[] = {26,25,12,17,23};         // GPIO cho 5 bóng đèn
 // const int IR_SENSOR_PINS[]={5,12,13,14,27,33,32,35,34}
-const int IR_SENSOR_PINS[]={27,32,33,34,35};
+const int IR_SENSOR_PINS[]={35,34,32,27,33};
 
 // Tần số PWM và độ phân giải
 const int pwmFreq = 5000; // Tần số PWM 5 kHz
