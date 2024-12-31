@@ -3,15 +3,14 @@
 
 //define cha LDR module
 #define LDR_MODULE 13
-#define ACS_MODULE 14
+#define ACS_MODULE 34
  //C:\Users\Dell\data
 // Wi-Fi
 const char WIFI_SSID[] = "T2";     // CHANGE TO YOUR WIFI SSID
 const char WIFI_PASSWORD[] = "00009999";  // CHANGE TO YOUR WIFI PASSWORD
 
 // MQTT
-//const char MQTT_BROKER_ADRRESS[] = "broker.hivemq.com";  // CHANGE TO MQTT BROKER'S ADDRESS
-//const char MQTT_BROKER_ADRRESS[] = "test.mosquitto.org";
+
 const char MQTT_BROKER_ADRRESS[] = "04f4aeeea4d84429864135c7870eb612.s1.eu.hivemq.cloud";
 const int MQTT_PORT = 8883;//1883
 const char MQTT_CLIENT_ID[] = "thaipbl3532-esp32-001";  // CHANGE IT AS YOU DESIRE
@@ -25,13 +24,13 @@ const int PUBLISH_INTERVAL = 5000;  // 5 seconds
 
 //tinh nang giam sat dien tieu thu
 
-unsigned long previousMillis = 0;  // Thời gian trước đó (sử dụng millis)
-unsigned long interval = 60000;    // 1 phút (60,000 ms)
+unsigned long previousCurrentMillis = 0;  // Thời gian trước đó (sử dụng millis)
+unsigned long intervalCurrent = 10000;    // 1 phút (60,000 ms)
 //hardware configuration
 const int BUTTON_PINS[] = {19, 18, 16, 15, 4}; // GPIO cho 5 nút nhấn
 const int LIGHT_PINS[] = {26,25,12,17,23};         // GPIO cho 5 bóng đèn
 // const int IR_SENSOR_PINS[]={5,12,13,14,27,33,32,35,34}
-const int IR_SENSOR_PINS[]={35,34,32,27,33};
+const int IR_SENSOR_PINS[]={35,14,32,27,33};
 
 // Tần số PWM và độ phân giải
 const int pwmFreq = 5000; // Tần số PWM 5 kHz
@@ -52,4 +51,5 @@ void connectToWiFi();
 void powerSavingModeHandler();
 void setUpLDRModule();
 void autoLightModeHandler();
+
 #endif

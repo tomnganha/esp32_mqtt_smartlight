@@ -2,6 +2,7 @@
 #include<WiFi.h>
 #include<MQTTClient.h>
 #include<ezButton.h>
+#include<NTPClient.h>
 #include "config.h"
 #include "wifi_handler.h"
 #include "light_handler.h"
@@ -10,11 +11,11 @@
 #include "ldr_module.h"
 #include<WiFiClientSecure.h>
 
+
 WiFiClientSecure network;
 MQTTClient mqtt = MQTTClient(256);
 unsigned long lastPublishTime = 0;
 const int NUM_LIGHTs=5;
-//bool lightStates[NUM_LIGHTs]={false,false,false,false,false};
 String lightStates[NUM_LIGHTs]={"off","off","off","off","off"};
 //ezButton buttons[NUM_LIGHTs];
 // // Tạo mảng quản lý nút nhấn và khởi tạo ngay
@@ -32,6 +33,8 @@ void setup() {
   analogSetAttenuation(ADC_11db);
 
   connectToWiFi();
+  //
+ 
    // Cấu hình TLS
   network.setCACert(
   "-----BEGIN CERTIFICATE-----\n"
@@ -69,6 +72,7 @@ void setup() {
   setUpIrSensors();
   setUpLDRModule();
   setUpLightsAndButton();
+ 
 }
 
 void loop() {
@@ -85,8 +89,4 @@ void loop() {
     autoLightModeHandler();
   }
   handleButtonPress();
-  // if (millis() - lastPublishTime > PUBLISH_INTERVAL) {
-  //   sendToMQTT();
-  //   lastPublishTime = millis();
-  // }
 }
